@@ -46,6 +46,14 @@ at_event = on_message(rule=to_me(), priority=10, block=False)
 
 @at_event.handle()
 async def handle_at(bot: Bot, event: GroupMessageEvent):
+    # 获取消息内容，检查@bot后是否有多余文本
+    message = event.get_message()
+    text_content = message.extract_plain_text().strip()
+    
+    # 如果有多余文本，则不触发
+    if text_content:
+        return
+    
     # 黑名单检查
     if is_blacklisted(event.group_id, event.user_id):
         return
